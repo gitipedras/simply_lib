@@ -1,6 +1,21 @@
-local worldpath = core.get_worldpath()
-config_folder = worldpath .. "/simply_mods"
+local config_folder = minetest.get_worldpath() .. "/simply_mods"
 
+if config_folder~=nil then
+	print("[Simply Lib] Config folder is empty: creating...")
+	core.mkdir(config_folder)
+end
+
+local debug_enabled = true
+
+function sDebug(message)
+	if debug_enabled == true then
+		print("[Simply Lib] " .. message)
+	else
+		-- debug disabled
+	end
+end
+
+sDebug("Configuration folder is: " .. config_folder)
 
 simply_lib = {}
 
@@ -9,19 +24,17 @@ function simply_lib.saveConfig(modname, tbl)
 	local f = io.open(modC, "w")
 	f:write(minetest.serialize(tbl))
 	f:close()
-	print("[Simply Lib] Saved config for mod '" ..  modname .. "'.")
+	sDebug("Saved config for mod '" ..  modname .. "'.")
 end
 
 function simply_lib.loadConfig(modname)
 	local modC = config_folder .. "/" .. modname .. ".txt"
 	local f = io.open(modC, "r")
-	if not f then
-		-- file does not exist
-		return {}
-	end
+	if not f then return {} end
 	local data = f:read("*a")
 	f:close()
 	local modConfig = minetest.deserialize(data) or {}
+	sDebug("Config for '" .. modname .. "' data dump: " .. dump(modConfig))
 	return modConfig
 end
 
