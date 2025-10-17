@@ -1,9 +1,13 @@
 local config_folder = minetest.get_worldpath() .. "/simply_mods"
 
 if config_folder~=nil then
-	print("[Simply Lib] Config folder is empty: creating...")
+	print("[Simply Lib] Config folder does not exist: creating...")
 	core.mkdir(config_folder)
 end
+
+local modpath = minetest.get_modpath("simply_lib")
+
+dofile(modpath .. "/titles.lua")
 
 local debug_enabled = true
 
