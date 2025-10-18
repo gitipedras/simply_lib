@@ -1,4 +1,5 @@
 local config_folder = minetest.get_worldpath() .. "/simply_mods"
+simply_lib = {}
 
 if config_folder~=nil then
 	print("[Simply Lib] Config folder does not exist: creating...")
@@ -21,7 +22,6 @@ end
 
 sDebug("Configuration folder is: " .. config_folder)
 
-simply_lib = {}
 
 function simply_lib.saveConfig(modname, tbl)
 	local modC = config_folder .. "/" .. modname .. ".txt"

@@ -1,3 +1,7 @@
+-----------------------
+-- ### Functions ### --
+-----------------------
+
 local function split_params_title(param)
     local args = {}
 
@@ -24,20 +28,19 @@ local function split_params_title(param)
     return args
 end
 
-minetest.register_chatcommand("title", {
-    description = "Show a title-like text on screen. Usage: <player> <color> <time> <text> (text between quotes)",
-    func = function(name, param)
+local function show_title(name, param)
         local args = split_params_title(param)
         local playerName = args[1] or "greatbigdiamond"
         local color = args[2] or "white"
         local time = tonumber(args[3]) or 3
         local text = args[4] or "nil"
 
-        minetest.chat_send_player(name, "args[1]: "..tostring(args[1]))
-        minetest.chat_send_player(name, "args[2]: "..tostring(args[2]))
-        minetest.chat_send_player(name, "args[3]: "..tostring(args[3]))
-        minetest.chat_send_player(name, "args[4]: "..tostring(args[4]))
-
+        if debug_enabled == true then
+            minetest.chat_send_player(name, "args[1]: "..tostring(args[1]))
+            minetest.chat_send_player(name, "args[2]: "..tostring(args[2]))
+            minetest.chat_send_player(name, "args[3]: "..tostring(args[3]))
+            minetest.chat_send_player(name, "args[4]: "..tostring(args[4]))
+        end
 
         local colors = {
             white      = 0xFFFFFF,
@@ -86,24 +89,22 @@ minetest.register_chatcommand("title", {
         minetest.after(time, function()
             target:hud_remove(hud_title)
         end)
-    end,
-})
+        return true, "Showing title to " ..playerName
+end
 
-
-minetest.register_chatcommand("subtitle", {
-    description = "Show a title-like text on screen, below the actual title. Usage: /subtitle <player> <color> <time> <text> (text between quotes)",
-    func = function(name, param)
+local function show_subtitle(name, param)
         local args = split_params_title(param)
         local playerName = args[1] or "greatbigdiamond"
         local color = args[2] or "white"
         local time = tonumber(args[3]) or 3
         local text = args[4] or "nil"
 
-        minetest.chat_send_player(name, "args[1]: "..tostring(args[1]))
-        minetest.chat_send_player(name, "args[2]: "..tostring(args[2]))
-        minetest.chat_send_player(name, "args[3]: "..tostring(args[3]))
-        minetest.chat_send_player(name, "args[4]: "..tostring(args[4]))
-
+        if debug_enabled == true then
+            minetest.chat_send_player(name, "args[1]: "..tostring(args[1]))
+            minetest.chat_send_player(name, "args[2]: "..tostring(args[2]))
+            minetest.chat_send_player(name, "args[3]: "..tostring(args[3]))
+            minetest.chat_send_player(name, "args[4]: "..tostring(args[4]))
+        end
 
         local colors = {
             white      = 0xFFFFFF,
@@ -152,5 +153,52 @@ minetest.register_chatcommand("subtitle", {
         minetest.after(time, function()
             target:hud_remove(hud_title)
         end)
-    end,
+        return true, "Showing subtitle to " ..playerName
+end
+
+-----------------------
+-- ### Commands ### ---
+-----------------------
+
+minetest.register_chatcommand("title", {
+    privs = {admin = true},
+    description = "Show a title-like text on screen. Usage: /title <player> <color> <time> <text> (text between quotes)",
+    params = "/title <player> <color> <time> <text>",
+    func = function(name, param)
+        return show_title(name, param)
+    end
 })
+
+
+minetest.register_chatcommand("subtitle", {
+    privs = {admin = true},
+    description = "Show a title-like text on screen, below the actual title. Usage: /subtitle <player> <color> <time> <text> (text between quotes)",
+    params = "/subtitle <player> <color> <time> <text>",
+    func = function(name, param)
+        return show_subtitle(name, param)
+    end
+})
+
+------------------
+-- ### API ### ---
+------------------
+
+function simply_lib.show_title(name, color, time, text)
+    local playerName = args[1] or "greatbigdiamond"
+        local color = args[2] or "white"
+        local time = tonumber(args[3]) or 3
+        local text = args[4] or "nil"
+
+    params = {name, color, time, text}
+    show_title(name, params)
+end
+
+function simply_lib.show_subtitle(name, color, time, text)
+    local playerName = args[1] or "greatbigdiamond"
+        local color = args[2] or "white"
+        local time = tonumber(args[3]) or 3
+        local text = args[4] or "nil"
+
+    params = {name, color, time, text}
+    show_subtitle(name, params)
+end
